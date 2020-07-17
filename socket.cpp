@@ -30,7 +30,7 @@ bool Socket::open(unsigned short port) {
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons((unsigned short) port);
 
-    if (bind( handle, (const sockaddr*) &address, sizeof(sockaddr_in) ) < 0)
+    if (bind(handle, (const sockaddr*) &address, sizeof(sockaddr_in)) < 0)
         return false;
 
     if (!this->setToNonBlockingMode()) {

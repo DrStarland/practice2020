@@ -8,7 +8,7 @@ protected:
 public:
     BasePacket() = default;
     virtual ~BasePacket() = default;
-    virtual int getID() const noexcept { return ID; }
+    int getID() const noexcept { return ID; }
 };
 
 #endif // BASEPACKET_H

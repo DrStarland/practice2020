@@ -66,7 +66,7 @@ size_t FileDescriptor::getPacket(char *buf, size_t number) const {
 }
 
 size_t FileDescriptor::setPacket(char *buf, size_t len, size_t number) {
-    fseek(file, number * len, SEEK_SET);
+    fseek(file, number * MAX_PACKET_LEN, SEEK_SET);
     return fwrite(buf, 1, len, file);
 }
 

@@ -1,7 +1,7 @@
 #include "filedeclaration.h"
 
 FileDeclaration::FileDeclaration(const char *name, const char *comment, size_t number) : packet_num(number) {
-    ID = rand();
+    this->ID = rand();
     strncpy(filename, name, FILENAME_MAX_LEN);
     strncpy(this->comment, comment, COMMENT_MAX_LEN);
     finish_flag = false;

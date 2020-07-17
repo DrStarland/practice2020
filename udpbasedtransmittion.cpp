@@ -21,17 +21,16 @@ int UDPBasedTransmittion::receive(Address &sender, void *buffer, int size) const
 bool UDPBasedTransmittion::sendFile(const Address &destination, const char *filename) {
     if (!isActive())
         return false;
-    cout << "?\n";
-    FileDescriptor file(filename, "rb");
 
+    FileDescriptor file(filename, "rb");
     if (!bool(file))
-        return false; //throw
-    cout << "??\n";
+        return false;
+
     FileDeclaration order(filename, "", file.countPackets(MAX_PACKET_LEN));
     int my_ID = order.getID();
     if (!send(destination, &order, sizeof(FileDeclaration)))
         return false;
-    cout << "???\n";
+
     AnswerDeclaration answer(0, 0);
     Address sender;
 
@@ -39,7 +38,7 @@ bool UDPBasedTransmittion::sendFile(const Address &destination, const char *file
     for (size_t i = 0; i < 15000000; i++)
         if (receive(sender, &answer, sizeof(AnswerDeclaration)) > 0) {
             cout << "chto-to prislo\n";
-            if (true || (sender == destination && answer.cmp_ID(my_ID) && bool(answer))) {
+            if ((sender == destination && answer.cmp_ID(my_ID) && bool(answer))) {
                 //sending_process()
                 cout << "????\n";
                 for (size_t i = 0; i < order.getPacketAmount(); ++i) {
@@ -60,69 +59,47 @@ bool UDPBasedTransmittion::sendFile(const Address &destination, const char *file
 
 bool UDPBasedTransmittion::receiveFile(FileDeclaration &order, const char *another_name) {
     Address sender;
-    cout << "!\n";
-    int temp;
-    char order_pl[2000];
-    for (size_t i = 0; i < 150000000; i++)
-    {
-        if ((temp = m_socket.receive(sender, &order, sizeof(FileDeclaration))) > 0) {
-            if (temp == sizeof(FileDeclaration)) {
-                cout << "!!!!!!!!!!!!!!!!!!!\n";
-                AnswerDeclaration verdict(22222, true);
-                cout << send(sender, &verdict, sizeof(AnswerDeclaration)) << std::endl;
-                break;
-            }
-        }
-    }
 
     FileDescriptor file(another_name == NULL ? order.getName() : another_name, "wb+");
     Infopacket buf_pack;
     std::vector<unsigned char> list_of_lack = {};
     list_of_lack.resize(order.getPacketAmount());
     for (unsigned char& i : list_of_lack)
-        i = 0; // proverit`
-    cout << "!!!\n";
+        i = 0;
+
     size_t control_sum = order.getPacketAmount();
-    for (size_t j = 0, i = 0; i < 15000000 && control_sum; i++) {
+    for (size_t i = 0; i < 15000000 && control_sum; i++) {
         if (receive(sender, &buf_pack, sizeof(Infopacket))) {
             list_of_lack[buf_pack.getNumber()] = 1;
             UDPbuffer.push_back(buf_pack);
             --i, --control_sum;
-            file.setPacket(buf_pack.getData(), buf_pack.getDataLength(), j++);
-            cout << "/////\n";
         }
     }
     size_t j = 0;
     for (Infopacket& i : UDPbuffer) {
         file.setPacket(i.getData(), i.getDataLength(), j++);
     }
-    j = 0;
-    for (unsigned char& i : list_of_lack) {
-        if (i == 0)
-            cout << "Achtung " << j << " ";
-        ++j;
-    }
-    cout << std::endl;
-    cout << "!!!!\n";
-//    for (size_t i = 0; i < order.getPacketAmount(); i++) {
-//        if (!(m_socket.receive(sender, &buf_pack.getDatagram(), sizeof(Infopacket::packet_t)) < 0)) {
-//            list_of_lack[buf_pack.getNumber()] = 1;
-//            file.setPacket(buf_pack.getData(), buf_pack.getDataLength(), i);
-//        }
-//    }
 
+    //сделать запрос недошедших пакетов.
     return true;
 }
 
-bool UDPBasedTransmittion::receiveDeclaration(FileDeclaration &order, Address &sender) {
-    int temp;
-    for (size_t i = 0; i < 15000000; i++)
-    {
-        if ((temp = m_socket.receive(sender, &order, sizeof(FileDeclaration))) > 0) {
-            if (temp == sizeof(FileDeclaration)) {
-                AnswerDeclaration verdict(order.getID(), true);
-                m_socket.send(sender, &verdict, sizeof(AnswerDeclaration));
+bool UDPBasedTransmittion::receiveDeclaration(FileDeclaration &order, Address &sender) {   
+    int size;
+    for (size_t i = 0; i < 75000000; i++) {
+        if ((size = m_socket.receive(sender, &order, sizeof(FileDeclaration)))) {
+            if (size == sizeof(FileDeclaration)) {
+                try {
+                    AnswerDeclaration verdict(order.getID(), true);
+                    send(sender, &verdict, sizeof(AnswerDeclaration));
+                } catch (...) {
+                    cout << "Incoming message has an unallowed format. Error.\n";
+                    return false;
+                }
                 return true;
+            }
+            else {
+                cout << "Incoming message has an unknown format.\n";
             }
         }
     }
