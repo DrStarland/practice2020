@@ -13,9 +13,9 @@ private:
     size_t packet_number;
     short end;
 public:
+    // добавить операторы сравнения по номеру для сортировки
     Infopacket() = default;
     Infopacket(const void *data, size_t len, size_t number, int ID);
-    //Infopacket(Infopacket &datagram);
     virtual ~Infopacket() = default;
     bool reset(FileDescriptor &file, size_t number, int ID);
     bool reset(const void *data, size_t len, size_t number, int ID);

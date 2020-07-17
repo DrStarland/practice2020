@@ -4,8 +4,6 @@ Infopacket::Infopacket(const void *data, size_t len, size_t number, int ID) {
     this->reset(data, len, number, ID);
 }
 
-//Infopacket::Infopacket(Infopacket &datagram) { *this = std::move(datagram); }
-
 bool Infopacket::reset(const void *data, size_t len, size_t number, int ID) {
     if (MAX_PACKET_LEN < len)
         return false;
