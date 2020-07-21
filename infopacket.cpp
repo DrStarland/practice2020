@@ -8,8 +8,7 @@ bool Infopacket::reset(const void *data, size_t len, size_t number, int ID) {
     if (MAX_PACKET_LEN < len)
         return false;
 
-    for (size_t i = 0; i < len; i++)
-        this->data[i] = ((char*) data)[i];
+    memcpy(this->data, data, len);
     packet_number = number;
     end = len;
     this->ID = ID;
@@ -21,5 +20,18 @@ bool Infopacket::reset(FileDescriptor &file, size_t number, int ID) {
     packet_number = number;
     this->ID = ID;
     return true;
+}
+
+bool Infopacket::operator>(const Infopacket &inf) {
+    return (this->packet_number > inf.packet_number);
+}
+bool Infopacket::operator<(const Infopacket &inf) {
+    return (this->packet_number < inf.packet_number);
+}
+bool Infopacket::operator<=(const Infopacket &inf) {
+    return (this->packet_number <= inf.packet_number);
+}
+bool Infopacket::operator>=(const Infopacket &inf) {
+    return (this->packet_number >= inf.packet_number);
 }
 

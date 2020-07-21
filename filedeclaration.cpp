@@ -17,6 +17,14 @@ size_t FileDeclaration::getPacketAmount() const noexcept {
     return packet_num;
 }
 
+bool FileDeclaration::setComment(const void *str, size_t len) {
+    if (len > COMMENT_MAX_LEN)
+        return false;
+
+    memcpy(comment, str, len);
+    return true;
+}
+
 void FileDeclaration::complete() noexcept {
     finish_flag = true;
 }

@@ -61,7 +61,7 @@ void FileDescriptor::pr_set(size_t ind, char buf) {
 size_t FileDescriptor::getPacket(char *buf, size_t number) const {
     fseek(file, number * MAX_PACKET_LEN, SEEK_SET);
     int temp = fread(buf, 1, MAX_PACKET_LEN, file);
-    std::cout << file_size << ", " << (size_t) MAX_PACKET_LEN << ", " << temp << std::endl;
+    //std::cout << file_size << ", " << (size_t) MAX_PACKET_LEN << ", " << temp << std::endl;
     return temp;
 }
 

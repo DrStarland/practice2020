@@ -16,6 +16,9 @@ int main()
     UDPBasedTransmittion system(27000);
 
     Address destination(127, 0, 0, 1, 26000);
+    //http://176.195.28.243
+    //Address destination(176, 195, 28, 243, 26000);
+
     char name[] = "test.png";
     cout << "activity test " << system.isActive() << endl;
     {
@@ -24,7 +27,7 @@ int main()
     }
 
 
-    system.sendFile(destination, name);
+    cout << system.sendFile(destination, name);
 
     cout << "\nall";
     return 0;

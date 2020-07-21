@@ -22,7 +22,10 @@ public:
     char* getData() { return this->data; }
     short getDataLength() const { return this->end; }
     size_t getNumber() const { return this->packet_number; }
-
+    bool operator>(const Infopacket &inf);
+    bool operator<=(const Infopacket &inf);
+    bool operator<(const Infopacket &inf);
+    bool operator>=(const Infopacket &inf);
 };
 
 #endif // INFOPACKET_H

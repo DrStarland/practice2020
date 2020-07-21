@@ -20,6 +20,7 @@ public:
     virtual ~FileDeclaration() = default;
     const char* getName() const noexcept;
     const char* getComment() const noexcept;
+    bool setComment(const void *str, size_t len);
     size_t getPacketAmount() const noexcept;
     void complete() noexcept;
     bool isCompleted() const noexcept;
